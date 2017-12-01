@@ -1,0 +1,47 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+
+public class Solution {
+
+    static String isValid(String s){
+        
+        //create a map with chars and their respective counts
+        HashMap<Character, Integer> chars = new HashMap<>();
+        for(char c : s.toCharArray()) {
+            if (chars.containsKey(c)) chars.put(c, chars.get(c) + 1);
+            else chars.put(c, 1);
+        }
+        
+        // array list of counts e.g. aabbcccd -> {2, 2, 3, 1}
+        ArrayList<Integer> al = new ArrayList(chars.values());
+        // hash set of counts e.g. aabbcccd -> {2, 3, 1}
+        HashSet<Integer> hs = new HashSet(chars.values());
+        
+        if (hs.size() == 1) return "YES";
+        else if (hs.size() == 2) {
+            //get the char counts
+            int largestCount = Collections.max(hs);
+            int lowestCount = Collections.min(hs);
+            // check if there is one stray char which can be removed
+            if (Collections.frequency(al, lowestCount) == 1) {
+                return "YES"; 
+            }
+            //ensure there is only one char with highest count and it's count is only 1 greater 
+            else if ((Collections.frequency(al, largestCount) == 1) && (largestCount - lowestCount == 1)){
+                return "YES";    
+            }
+        }
+        return "NO";
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String s = in.next();
+        String result = isValid(s);
+        System.out.println(result);
+    }
+}

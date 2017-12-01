@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.HashSet;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int k = in.nextInt();
+        int rQueen = in.nextInt();
+        int cQueen = in.nextInt();
+        Set<int[]> obstacles = new HashSet<int[]>();
+        Set<String> obStr = new HashSet<String>();
+        
+        for(int a0 = 0; a0 < k; a0++){
+            int rObstacle = in.nextInt();
+            int cObstacle = in.nextInt();
+            int[] obstacle = new int[] {rObstacle, cObstacle};
+            obstacles.add(obstacle);
+        }
+        
+        for (int[] obstacle: obstacles){
+            String ob = Integer.toString(obstacle[0]) + ", " + Integer.toString(obstacle[1]);
+            obStr.add(ob);
+        } 
+        
+        int total=0;
+            
+        int[][] diffCheck = new int[][] {
+            {1,0},
+            {1,1},
+            {0,1},
+            {-1,1},
+            {-1,0},
+            {-1,-1},
+            {0,-1},
+            {1,-1}
+        };
+            
+        for(int directions=0; directions<=7; directions++){
+            int diff = 1;
+            while(true){
+                int[] squareToCheck = {rQueen + (diffCheck[directions][0] * diff), cQueen + diffCheck[directions][1] * diff};
+                String stc = Integer.toString(squareToCheck[0]) + ", " + Integer.toString(squareToCheck[1]);
+                
+                // break if end of board or obstacle
+                if (squareToCheck[0]>n ||
+                    squareToCheck[0]<1 ||
+                    squareToCheck[1]>n ||
+                    squareToCheck[1]<1 ||
+                    obStr.contains(stc)) {
+                    break;
+                }
+                total++; 
+                diff++;
+            }
+        }
+        
+        System.out.println(total);
+    }
+}

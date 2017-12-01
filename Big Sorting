@@ -1,0 +1,46 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+class CustomComparator implements Comparator<String> {
+    
+    // we need to override compare with a custom function
+    @Override
+    public int compare(String o1, String o2) {
+
+        // if a number has more digits it must be larger so return
+        if (o1.length() != o2.length()) {
+            return o1.length() - o2.length();
+        }
+
+        // otherwise iterate over and compare each individual characters,
+        // if they differ then return
+        for (int i=0; i<o1.length(); i++) {
+            if (o1.charAt(i) != o2.charAt(i)) {
+                return o1.charAt(i) - o2.charAt(i);
+            }
+        }
+        // they must be the same numbers so return 0 for equality
+        return 0;
+    }
+}
+
+public class Solution { 
+    
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        String[] unsorted = new String[n];
+        for(int unsorted_i=0; unsorted_i < n; unsorted_i++){
+            unsorted[unsorted_i] = in.next();
+        }
+        
+        Arrays.sort(unsorted, new CustomComparator());
+        
+        for (String s: unsorted) {
+            System.out.println(s);
+        }
+    }
+}

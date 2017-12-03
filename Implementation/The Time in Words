@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    
+    static String makeString(int number) {
+        String[] numberStrings = {
+            "zero", 
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+            "eleven",
+            "twelve",
+            "thirteen",
+            "fourteen",
+            "fifteen",
+            "sixteen",
+            "seventeen",
+            "eighteen",
+            "nineteen",
+            "twenty",
+            "twenty one",
+            "twenty two",
+            "twenty three",
+            "twenty four",
+            "twenty five",
+            "twenty six",
+            "twenty seven",
+            "twenty eight",
+            "twenty nine"
+        };
+        return numberStrings[number];
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int hour = in.nextInt();
+        int mins = in.nextInt();
+        String hourString = makeString(hour);
+        String nextHourString;
+        String timeString;         
+        
+        if (hour == 12) {
+            nextHourString = "one";
+        } else {
+            nextHourString = makeString(hour + 1);
+        }
+        
+        if (mins == 1){
+            timeString = "one minute past " + hourString;
+        } else if (mins == 59) {
+            timeString = "one minute to " + nextHourString;
+        } else if ((mins >= 2 && mins <= 14) || (mins >= 16 && mins <= 29)) {
+            timeString = makeString(mins) + " minutes past " + hourString;
+        } else if ((mins >= 31 && mins <= 44) || (mins >= 46 && mins <= 58)) {
+            timeString = makeString(60 - mins) + " minutes to " + nextHourString;
+        } else if (mins == 15) {
+            timeString = "quarter past " + hourString;
+        } else if (mins == 30) {
+            timeString = "half past " + hourString;
+        } else if (mins == 45) {
+            timeString = "quarter to " + nextHourString;
+        } else {
+            timeString = hourString + " o' clock";
+        }
+        
+        System.out.println(timeString);
+    }
+}

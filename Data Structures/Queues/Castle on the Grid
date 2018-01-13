@@ -1,0 +1,163 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+
+class Cell {
+    
+    int x;
+    int y;
+    
+    Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+}
+
+
+public class Solution {
+    
+    static int gridSize;
+    static int[][] minMovesToCell;
+    static int[][] settledCells;
+    
+    
+    public static int minimumMoves(String[] grid, int startX, int startY, int goalX, int goalY) {
+        Cell startCell = new Cell(startX, startY);
+        Cell goalCell = new Cell(goalX, goalY);
+        
+        createMinMovesToCellsGrid(grid);
+        setMinMovesTo(startCell, 0);
+        
+        LinkedList<Cell> cellsToCheck = new LinkedList<>();
+        cellsToCheck.add(startCell);
+        
+        while (cellsToCheck.size() > 0) {
+            Cell cellToCheck = cellsToCheck.remove();            
+            addToSettled(cellToCheck);
+            cellsToCheck.addAll(getCellsThatCanBeReachedFrom(cellToCheck));
+        }
+        return getMinMovesTo(goalCell);  
+    }
+    
+    
+    public static void addToSettled(Cell cell) {
+        settledCells[cell.x][cell.y] = 1;
+    }
+    
+    
+    public static int getMinMovesTo(Cell cell) {
+        return minMovesToCell[cell.x][cell.y];
+    }
+    
+    
+    public static void setMinMovesTo(Cell cell, int minMoves) {
+        minMovesToCell[cell.x][cell.y] = minMoves;
+    }
+    
+    
+    public static boolean isForbidden(Cell cell, String[] grid) {
+        if (grid[cell.x].charAt(cell.y) == 'X')
+            return true;
+        else
+            return false;
+    }
+    
+    
+    public static boolean isForbidden(Cell cell) {
+        if (getMinMovesTo(cell) == -1)
+            return true;
+        else
+            return false;
+    }
+    
+    
+    public static boolean isSettled(Cell cell) {
+        if (settledCells[cell.x][cell.y] == 1)
+            return true;
+        else
+            return false;
+    }
+    
+    
+    public static boolean isOutsideGrid(Cell cell) {
+        if (cell.x >= gridSize ||
+            cell.x < 0 ||
+            cell.y >= gridSize ||
+            cell.y < 0)
+            return true;
+        else
+            return false;
+    }
+    
+            
+    public static void createMinMovesToCellsGrid(String[] grid) {
+        minMovesToCell = new int[gridSize][gridSize];
+        for (int x=0; x<gridSize; x++) {
+            for (int y=0; y<gridSize; y++) {
+                Cell currentCell = new Cell(x, y);
+                if (isForbidden(currentCell, grid))
+                    setMinMovesTo(currentCell, -1);
+                else
+                    setMinMovesTo(currentCell, Integer.MAX_VALUE); 
+            }
+        }
+    }
+    
+    
+    public static LinkedList<Cell> getCellsThatCanBeReachedFrom(Cell startCell) {
+        LinkedList<Cell> cellsThatCanBeReached = new LinkedList<>();
+        int[][] directions = {
+            {1,0},
+            {0,1},
+            {-1,0},
+            {0,-1}
+        };
+        
+        for (int direction=0; direction<=3; direction++){
+            int distance = 1;
+            while(true){
+                Cell cellToCheck = new Cell(startCell.x + (directions[direction][0] * distance), 
+                                            startCell.y + (directions[direction][1] * distance));
+                if (isOutsideGrid(cellToCheck) ||
+                    isForbidden(cellToCheck) ||
+                    isSettled(cellToCheck)) {
+                    break;
+                }                
+                int numOfMovesToCell = getMinMovesTo(startCell) + 1;
+                if (numOfMovesToCell < getMinMovesTo(cellToCheck)) {
+                    setMinMovesTo(cellToCheck, numOfMovesToCell);
+                    cellsThatCanBeReached.add(cellToCheck);
+                }                   
+                distance++;
+            }
+        }        
+        return cellsThatCanBeReached;
+    }
+    
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        
+        String[] grid = new String[n];
+        for(int grid_i = 0; grid_i < n; grid_i++){
+            grid[grid_i] = in.next();
+        }
+        
+        int startX = in.nextInt();
+        int startY = in.nextInt();
+        int goalX = in.nextInt();
+        int goalY = in.nextInt();
+        in.close();
+        
+        gridSize = grid.length;
+        settledCells = new int[gridSize][gridSize];
+        
+        int result = minimumMoves(grid, startX, startY, goalX, goalY);
+        System.out.println(result);
+    }
+}

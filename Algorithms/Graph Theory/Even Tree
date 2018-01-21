@@ -1,0 +1,63 @@
+import java.io.*;
+import java.util.*;
+
+class Tree {
+    
+    Map<Integer, List<Integer>> tree;
+        
+    Tree(int numOfNodes) {
+        tree = new HashMap<>(numOfNodes);
+        for (int i=1; i<=numOfNodes; i++) {
+            tree.put(i, new ArrayList<Integer>());
+        }
+    }
+                     
+    void addNeighbourNode(int parent,  int child) {
+        tree.get(parent).add(child);
+    }
+                     
+    int getNumOfEvenSubtrees() {
+        int numOfEvenSubtrees = 0;
+        for (int node=2; node<=tree.size(); node++) {
+            if (isSubtreeEven(node))
+                numOfEvenSubtrees++;
+        }
+        return numOfEvenSubtrees;
+    }  
+                     
+    int getSizeOfSubtree(int rootNode) {
+        int size = 1;
+        for (int childNode: tree.get(rootNode)) {
+            size += getSizeOfSubtree(childNode);
+        }
+        return size;
+    }
+    
+    boolean isSubtreeEven(int rootNode) {
+        int size = getSizeOfSubtree(rootNode);
+        boolean isEven = (size % 2 == 0);
+        return isEven;
+    }
+}
+
+
+public class Solution {
+
+    public static void main(String[] args) {
+        
+        Scanner in = new Scanner(System.in);
+        int numOfNodes = in.nextInt();
+        int numOfEdges = in.nextInt();
+        
+        Tree tree = new Tree(numOfNodes);
+        
+        for (int i=0; i<numOfEdges; i++) {
+            int child = in.nextInt();
+            int parent = in.nextInt();
+            tree.addNeighbourNode(parent, child);
+        }
+        
+        int maxNumOfEdgesRemoved = tree.getNumOfEvenSubtrees();
+        System.out.println(maxNumOfEdgesRemoved);     
+    }
+}
